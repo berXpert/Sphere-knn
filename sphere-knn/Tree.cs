@@ -25,10 +25,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BerXpert.SphereKnn
 {
@@ -82,7 +79,7 @@ namespace BerXpert.SphereKnn
 
         private Node<T> BuildRectangle(List<Node<T>> points, int depth)
         {
-            Console.WriteLine("depth: {0}", depth);
+            //Console.WriteLine("depth: {0}", depth);
             if (points == null)
             {
                 return null;
@@ -95,7 +92,7 @@ namespace BerXpert.SphereKnn
 
             foreach (var item in points)
             {
-                Console.WriteLine(item.Data);
+                //Console.WriteLine(item.Data);
             }
 
             if (points.Count == 1)
