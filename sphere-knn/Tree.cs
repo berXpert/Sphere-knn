@@ -140,7 +140,7 @@ namespace BerXpert.SphereKnn
             }
 
             var result = new List<NodeMeasured<T>>();
-            if (node == null || max <= 0 || n == 0)
+            if (node == null || max <= 0 || n <= 0)
             {
                 return result;
             }
