@@ -29,7 +29,7 @@ namespace sphere.Tests
                 new City("Tokyo",     35.690, 139.692)
             };
 
-            tree = new Tree<City>(cities, new Func<City, double[]>(c => Cartesian.FromSpherical(c.Latitude, c.Longitude)));
+            tree = new Tree<City>(cities, new Func<City, Point3d>(c => Cartesian.FromSpherical(c.Latitude, c.Longitude)));
 
         }
         
@@ -39,14 +39,14 @@ namespace sphere.Tests
             Tree<int> tree;
             var ints = new int[3];
 
-            tree = new Tree<int>(ints, new Func<int, double[]?>(p => null));
+            tree = new Tree<int>(ints, new Func<int, Point3d?>(p => null));
             Assert.NotNull(tree);
         }
 
         [Fact]
         public void Check_Philadelphia()
         {
-            var tree = new Tree<City>(cities, new Func<City, double[]>(c => Cartesian.FromSpherical(c.Latitude, c.Longitude)));
+            var tree = new Tree<City>(cities, new Func<City, Point3d>(c => Cartesian.FromSpherical(c.Latitude, c.Longitude)));
 
             var philadelphia = new City("Philadelphia", 39.95, -75.17);
 
@@ -59,12 +59,12 @@ namespace sphere.Tests
             Assert.Equal("Miami", closest[3].Node.Data.Name);
 
             var p = Cartesian.FromSpherical(philadelphia.Latitude, philadelphia.Longitude);
-            Console.WriteLine("{0} - ({1},{2},{3})", philadelphia.Name, p[0], p[1], p[2]);
+            Console.WriteLine("{0} - ({1},{2},{3})", philadelphia.Name, p.x, p.y, p.z);
 
             foreach (var item in closest)
             {
                 var q = Cartesian.FromSpherical(item.Node.Data.Latitude, item.Node.Data.Longitude);
-                Console.WriteLine("{0} : At: {1} | ({2},{3},{4})", item.Node.Data.Name, item.Distance, q[0], q[1], q[2]);
+                Console.WriteLine("{0} : At: {1} | ({2},{3},{4})", item.Node.Data.Name, item.Distance, q.x, q.y, q.z);
             }
         }
 

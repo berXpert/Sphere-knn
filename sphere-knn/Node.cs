@@ -34,8 +34,8 @@ namespace BerXpert.SphereKnn
         public Node<T> Left { get; set; }
         public Node<T> Right { get; set; }
 
-        public double[] Position { get; set; }
-        public Node(T data, double[] position)
+        public Point3d Position { get; set; }
+        public Node(T data, Point3d position)
         {
             this.Data = data;
             this.Position = position;

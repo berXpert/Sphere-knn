@@ -29,21 +29,34 @@ using System.Linq;
 
 namespace BerXpert.SphereKnn
 {
+    public record Point3d(double x, double y, double z)
+    {
+        public double this[int index]
+        {
+            get => index switch {
+                0 => x,
+                1 => y,
+                2 => z,
+                _  => 0  // In any other dimension its at is origin - vs throw out of range exception
+            };
+        }
+    }
+
     public class Tree<T>
     {
         public Node<T> Root { get; private set; }
 
-        private Func<T, double[]> GetPosition;
+        private Func<T, Point3d> GetPosition;
 
         private List<Node<T>> NodeData;
 
 
-        private double[] Position(T item)
+        private Point3d Position(T item)
         {
             var p = this.GetPosition(item);
-            if (p == null || p.Length !=  3)
+            if (p == null )
             {
-                return new double[] { 1, 1, 1 };
+                return new ( 1, 1, 1 );
             }
             return p;
         }
@@ -53,11 +66,11 @@ namespace BerXpert.SphereKnn
         /// </summary>
         /// <param name="data">List of elements used for search</param>
         /// <param name="getPosition">A function that provides a position in Cartisian form as an array [x,y,z] for the given data</param>
-        public Tree(IList<T> data, Func<T, double[]> getPosition)
+        public Tree(IList<T> data, Func<T, Point3d> getPosition)
         {
             if (getPosition == null)
             {
-                GetPosition = new Func<T, double[]>(t => new double[] { 1, 1, 1 });
+                GetPosition = new Func<T, Point3d>(t => new (1, 1, 1 ));
             }
             else
             {
@@ -224,9 +237,9 @@ namespace BerXpert.SphereKnn
             return result;
         }
 
-        private double Distance(double[] a, double[] b)
+        private double Distance(Point3d a, Point3d b)
         {
-            var i = Math.Min(a.Length, b.Length);
+            var i = 3;
             double d = 0;
             double k;
 

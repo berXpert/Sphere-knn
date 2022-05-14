@@ -35,7 +35,7 @@ namespace BerXpert.SphereKnn
             return Math.PI * angle / 180.0;
         }
 
-        public static double[] FromSpherical(double latitude, double longitude)
+        public static Point3d FromSpherical(double latitude, double longitude)
         {
             var lat = DegreeToRadian(latitude);
             var lon = DegreeToRadian(longitude);
@@ -44,7 +44,7 @@ namespace BerXpert.SphereKnn
             var y = Math.Sin(lat);
             var z = Math.Cos(lat) * Math.Sin(lon);
 
-            return new double[] { x, y, z };
+            return new (x, y, z);
         }
     }
 }
