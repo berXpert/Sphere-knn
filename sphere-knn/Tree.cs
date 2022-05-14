@@ -90,11 +90,6 @@ namespace BerXpert.SphereKnn
                 return null;
             }
 
-            foreach (var item in points)
-            {
-                //Console.WriteLine(item.Data);
-            }
-
             if (points.Count == 1)
             {
                 return new Node<T>(points[0].Data, Position(points[0].Data));
@@ -107,7 +102,8 @@ namespace BerXpert.SphereKnn
             //          orderby Position(o.Data)[axis] descending
             //          select o).ToList();
 
-            var i = (int)Math.Floor(points.Count * 0.5);
+            var i = points.Count /2;
+
 
             ++depth;
 
