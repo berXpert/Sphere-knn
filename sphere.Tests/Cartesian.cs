@@ -24,8 +24,9 @@
 #endregion
 
 using System;
+using BerXpert.SphereKnn;
 
-namespace BerXpert.SphereKnn
+namespace sphere.Tests
 {
     public class Cartesian
     {
