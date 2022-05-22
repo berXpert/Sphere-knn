@@ -80,12 +80,12 @@ namespace BerXpert.SphereKnn
 
             if (points.Count == 1)
             {
-                return new Node<T>(){ Data= points[0].Data, Position = Position(points[0].Data)};
+                return new Node<T>(){ Data= points[0].Data, Position = points[0].Position};
             }
 
             var axis = depth % 3; //Position(points[0].Data).Length; -> for true knn the mod is with "n"
 
-            points = points.OrderBy(p => Position(p.Data)[axis]).ToList();
+            points = points.OrderBy(p => p.Position[axis]).ToList();
             //points = (from o in points
             //          orderby Position(o.Data)[axis] descending
             //          select o).ToList();
@@ -97,7 +97,7 @@ namespace BerXpert.SphereKnn
 
             return new Node<T>(points[i].Data,
                                 axis,
-                                Position(points[i].Data)[axis],
+                                points[i].Position[axis],
                                 BuildRectangle(points.GetRange(0, i), depth),
                                 BuildRectangle(points.GetRange(i, points.Count - i), depth)
                 );
@@ -191,7 +191,7 @@ namespace BerXpert.SphereKnn
                 }
 
                 // Once hit a leaf node, insert into the list of candidates, making sure the list keep sorted
-                dist = this.Distance(searchPosition, Position(node.Data));
+                dist = this.Distance(searchPosition, node.Position);
 
                 if (dist <= max * max )
                 {
