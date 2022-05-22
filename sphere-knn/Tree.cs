@@ -29,19 +29,6 @@ using System.Linq;
 
 namespace BerXpert.SphereKnn
 {
-    public record Point3d(double x, double y, double z)
-    {
-        public double this[int index]
-        {
-            get => index switch {
-                0 => x,
-                1 => y,
-                2 => z,
-                _  => 0  // In any other dimension its at is origin - vs throw out of range exception
-            };
-        }
-    }
-
     public class Tree<T>
     {
         public Node<T> Root { get; private set; }
@@ -53,12 +40,7 @@ namespace BerXpert.SphereKnn
 
         private Point3d Position(T item)
         {
-            var p = this.GetPosition(item);
-            if (p == null )
-            {
-                return new ( 1, 1, 1 );
-            }
-            return p;
+            return this.GetPosition(item) ?? new ( 1, 1, 1 );
         }
 
         /// <summary>
@@ -68,22 +50,15 @@ namespace BerXpert.SphereKnn
         /// <param name="getPosition">A function that provides a position in Cartisian form as an array [x,y,z] for the given data</param>
         public Tree(IList<T> data, Func<T, Point3d> getPosition)
         {
-            if (getPosition == null)
-            {
-                GetPosition = new Func<T, Point3d>(t => new (1, 1, 1 ));
-            }
-            else
-            {
-                GetPosition = getPosition;
-            }
-
+            GetPosition = getPosition ?? new Func<T, Point3d>(t => new (1, 1, 1 ));
+            
             NodeData = new List<Node<T>>();
 
             if (data != null)
             {
                 foreach (var item in data)
                 {
-                    NodeData.Add(new Node<T>(item, Position(item)));
+                    NodeData.Add(new Node<T>(){ Data=item, Position=Position(item)});
                 }
             }
 
@@ -105,10 +80,10 @@ namespace BerXpert.SphereKnn
 
             if (points.Count == 1)
             {
-                return new Node<T>(points[0].Data, Position(points[0].Data));
+                return new Node<T>(){ Data= points[0].Data, Position = Position(points[0].Data)};
             }
 
-            var axis = depth % 3; //Position(points[0].Data).Length;
+            var axis = depth % 3; //Position(points[0].Data).Length; -> for true knn the mod is with "n"
 
             points = points.OrderBy(p => Position(p.Data)[axis]).ToList();
             //points = (from o in points

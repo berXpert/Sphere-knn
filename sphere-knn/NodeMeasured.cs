@@ -26,14 +26,5 @@
 
 namespace BerXpert.SphereKnn
 {
-    public class NodeMeasured<T>
-    {
-        public Node<T> Node { get; set; }
-        public double Distance { get; set; }
-        public NodeMeasured(Node<T> node, double distance)
-        {
-            Node = node;
-            Distance = distance;
-        }
-    }
+    public record NodeMeasured<T>(Node<T> Node, double Distance );
 }

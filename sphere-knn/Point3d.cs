@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 // Copyright (c) 2015 Bernardino Perea
 //
 // Permission is hereby granted, free of charge, to any person
@@ -26,8 +26,16 @@
 
 namespace BerXpert.SphereKnn
 {
-    public record Node<T>( T Data = default, int Axis = default, double Split = default, Node<T> Left = default, Node<T> Right = default, Point3d Position = default)
+    public record Point3d(double x, double y, double z)
     {
-        
+        public double this[int index]
+        {
+            get => index switch {
+                0 => x,
+                1 => y,
+                2 => z,
+                _  => 0  // In any other dimension its at is origin - vs throw out of range exception
+            };
+        }
     }
 }
