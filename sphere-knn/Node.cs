@@ -23,31 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-
 namespace BerXpert.SphereKnn
 {
-    public class Node<T>
-    {
-        public T Data { get; private set; }
-        public int Axis { get; set; }
-        public double Split { get; set; }
-        public Node<T> Left { get; set; }
-        public Node<T> Right { get; set; }
-
-        public Point3d Position { get; set; }
-        public Node(T data, Point3d position)
-        {
-            this.Data = data;
-            this.Position = position;
-        }
-
-        public Node(T data, int axis, double splitPoint, Node<T> left, Node<T> right)
-        {
-            this.Data = data;
-            this.Axis = axis;
-            this.Split = splitPoint;
-            this.Left = left;
-            this.Right = right;
-        }
-    }
+    public record Node<T>( T Data = default, int Axis = default, double Split = default, Node<T> Left = default, Node<T> Right = default, Point3d Position = default);
 }

@@ -29,53 +29,27 @@ using System.Linq;
 
 namespace BerXpert.SphereKnn
 {
-    public record Point3d(double x, double y, double z)
-    {
-        public double this[int index]
-        {
-            get => index switch {
-                0 => x,
-                1 => y,
-                2 => z,
-                _  => 0  // In any other dimension its at is origin - vs throw out of range exception
-            };
-        }
-    }
-
     public class Tree<T>
     {
-        public Node<T> Root { get; private set; }
+        public Node<T> Root { get; }
 
-        private Func<T, Point3d> GetPosition;
+        private readonly Func<T, Point3d> GetPosition;
 
-        private List<Node<T>> NodeData;
-
+        private readonly List<Node<T>> NodeData;
 
         private Point3d Position(T item)
         {
-            var p = this.GetPosition(item);
-            if (p == null )
-            {
-                return new ( 1, 1, 1 );
-            }
-            return p;
+            return this.GetPosition(item) ?? new(1, 1, 1);
         }
 
         /// <summary>
         /// Build a Tree
         /// </summary>
         /// <param name="data">List of elements used for search</param>
-        /// <param name="getPosition">A function that provides a position in Cartisian form as an array [x,y,z] for the given data</param>
+        /// <param name="getPosition">A function that provides a position in Cartesian form as an array [x,y,z] for the given data</param>
         public Tree(IList<T> data, Func<T, Point3d> getPosition)
         {
-            if (getPosition == null)
-            {
-                GetPosition = new Func<T, Point3d>(t => new (1, 1, 1 ));
-            }
-            else
-            {
-                GetPosition = getPosition;
-            }
+            GetPosition = getPosition ?? new Func<T, Point3d>(_ => new(1, 1, 1));
 
             NodeData = new List<Node<T>>();
 
@@ -83,7 +57,7 @@ namespace BerXpert.SphereKnn
             {
                 foreach (var item in data)
                 {
-                    NodeData.Add(new Node<T>(item, Position(item)));
+                    NodeData.Add(new Node<T>() { Data = item, Position = Position(item) });
                 }
             }
 
@@ -105,36 +79,34 @@ namespace BerXpert.SphereKnn
 
             if (points.Count == 1)
             {
-                return new Node<T>(points[0].Data, Position(points[0].Data));
+                return new Node<T>() { Data = points[0].Data, Position = points[0].Position };
             }
 
-            var axis = depth % 3; //Position(points[0].Data).Length;
+            var axis = depth % 3; //Position(points[0].Data).Length; -> for true knn the mod is with "n"
 
-            points = points.OrderBy(p => Position(p.Data)[axis]).ToList();
+            points = points.OrderBy(p => p.Position[axis]).ToList();
             //points = (from o in points
             //          orderby Position(o.Data)[axis] descending
             //          select o).ToList();
 
-            var i = points.Count /2;
-
+            var i = points.Count / 2;
 
             ++depth;
 
             return new Node<T>(points[i].Data,
                                 axis,
-                                Position(points[i].Data)[axis],
+                                points[i].Position[axis],
                                 BuildRectangle(points.GetRange(0, i), depth),
                                 BuildRectangle(points.GetRange(i, points.Count - i), depth)
                 );
         }
-
 
         public List<NodeMeasured<T>> Lookup(T search, Node<T> node, int n)
         {
             return Lookup(search, node, n, 100000000);
         }
 
-        private double invEarthDiameter = 1.0 / 12742018.0; /* meters */
+        private readonly double invEarthDiameter = 1.0 / 12742018.0; /* meters */
 
         /// <summary>
         /// Return the n elements closes to the search element for a given startingNode, withing max kilometers
@@ -166,7 +138,7 @@ namespace BerXpert.SphereKnn
             {
                 double dist = (double)stack.Pop();
                 node = (Node<T>)stack.Pop();
-                
+
                 if (node == null)
                 {
                     continue;
@@ -180,7 +152,7 @@ namespace BerXpert.SphereKnn
 
                 // If we've already found enough locations, and the furthest one is closer
                 // than this subtree possibly could be, just skip the subtree. 
-                if (result.Count == n && result[result.Count - 1].Distance < dist * dist)
+                if (result.Count == n && result[^1].Distance < dist * dist)
                 {
                     continue;
                 }
@@ -188,10 +160,10 @@ namespace BerXpert.SphereKnn
                 //Iterate all the way down the tree, adding nodes that we need to remember
                 //to visit later onto the stack.
                 var searchPosition = Position(search);
-                while ( node != null )
+                while (node != null)
                 {
                     Node<T> m;
-                    
+
                     if (searchPosition[node.Axis] < node.Split)
                     {
                         stack.Push(node.Right);
@@ -216,9 +188,9 @@ namespace BerXpert.SphereKnn
                 }
 
                 // Once hit a leaf node, insert into the list of candidates, making sure the list keep sorted
-                dist = this.Distance(searchPosition, Position(node.Data));
+                dist = Distance(searchPosition, node.Position);
 
-                if (dist <= max * max )
+                if (dist <= max * max)
                 {
                     var candidate = new NodeMeasured<T>(node, dist);
                     var index = result.BinarySearch(candidate, new CompareByDistance<T>());
@@ -237,7 +209,7 @@ namespace BerXpert.SphereKnn
             return result;
         }
 
-        private double Distance(Point3d a, Point3d b)
+        private static double Distance(Point3d a, Point3d b)
         {
             var i = 3;
             double d = 0;

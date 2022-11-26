@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 // Copyright (c) 2015 Bernardino Perea
 //
 // Permission is hereby granted, free of charge, to any person
@@ -23,28 +23,18 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System;
-using BerXpert.SphereKnn;
-
-namespace sphere.Tests
+namespace BerXpert.SphereKnn
 {
-    public static class Cartesian
+    public record Point3d(double X, double Y, double Z)
     {
-        private static double DegreeToRadian(double angle)
+        public double this[int index]
         {
-            return Math.PI * angle / 180.0;
-        }
-
-        public static Point3d FromSpherical(double latitude, double longitude)
-        {
-            var lat = DegreeToRadian(latitude);
-            var lon = DegreeToRadian(longitude);
-
-            var x = Math.Cos(lat) * Math.Cos(lon);
-            var y = Math.Sin(lat);
-            var z = Math.Cos(lat) * Math.Sin(lon);
-
-            return new (x, y, z);
+            get => index switch {
+                0 => X,
+                1 => Y,
+                2 => Z,
+                _  => 0  // In any other dimension its at is origin - vs throw out of range exception
+            };
         }
     }
 }
