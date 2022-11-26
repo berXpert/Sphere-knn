@@ -23,7 +23,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-
 namespace BerXpert.SphereKnn
 {
     public record NodeMeasured<T>(Node<T> Node, double Distance );

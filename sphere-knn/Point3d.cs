@@ -23,17 +23,16 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-
 namespace BerXpert.SphereKnn
 {
-    public record Point3d(double x, double y, double z)
+    public record Point3d(double X, double Y, double Z)
     {
         public double this[int index]
         {
             get => index switch {
-                0 => x,
-                1 => y,
-                2 => z,
+                0 => X,
+                1 => Y,
+                2 => Z,
                 _  => 0  // In any other dimension its at is origin - vs throw out of range exception
             };
         }

@@ -28,9 +28,8 @@ using BerXpert.SphereKnn;
 
 namespace sphere.Tests
 {
-    public class Cartesian
+    public static class Cartesian
     {
-
         private static double DegreeToRadian(double angle)
         {
             return Math.PI * angle / 180.0;

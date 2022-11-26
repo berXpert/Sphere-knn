@@ -6,7 +6,7 @@ namespace BerXpert.SphereKnn
 {
     public class SphereSearch<T>
     {
-        private Tree<T> kd;
+        private readonly Tree<T> kd;
         public SphereSearch(IList<T> points, Func<T, Point3d> getPosition)
         {
             kd = new Tree<T>(points, getPosition);

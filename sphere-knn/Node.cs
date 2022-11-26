@@ -23,7 +23,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-
 namespace BerXpert.SphereKnn
 {
     public record Node<T>( T Data = default, int Axis = default, double Split = default, Node<T> Left = default, Node<T> Right = default, Point3d Position = default);

@@ -5,11 +5,10 @@ using System.Collections.Generic;
 
 namespace sphere.Tests
 {
-
     public class SphereSearchTest
     {
-        private List<City> cities;
-        private Tree<City> tree;
+        private readonly List<City> cities;
+        private readonly Tree<City> tree;
 
         public SphereSearchTest()
         {
@@ -30,16 +29,15 @@ namespace sphere.Tests
             };
 
             tree = new Tree<City>(cities, new Func<City, Point3d>(c => Cartesian.FromSpherical(c.Latitude, c.Longitude)));
-
         }
-        
+
         [Fact]
         public void Build_Tree_of_ints()
         {
             Tree<int> tree;
             var ints = new int[3];
 
-            tree = new Tree<int>(ints, new Func<int, Point3d?>(p => null));
+            tree = new Tree<int>(ints, new Func<int, Point3d?>(_ => null));
             Assert.NotNull(tree);
         }
 
@@ -59,12 +57,12 @@ namespace sphere.Tests
             Assert.Equal("Miami", closest[3].Node.Data.Name);
 
             var p = Cartesian.FromSpherical(philadelphia.Latitude, philadelphia.Longitude);
-            Console.WriteLine("{0} - ({1},{2},{3})", philadelphia.Name, p.x, p.y, p.z);
+            Console.WriteLine("{0} - ({1},{2},{3})", philadelphia.Name, p.X, p.Y, p.Z);
 
             foreach (var item in closest)
             {
                 var q = Cartesian.FromSpherical(item.Node.Data.Latitude, item.Node.Data.Longitude);
-                Console.WriteLine("{0} : At: {1} | ({2},{3},{4})", item.Node.Data.Name, item.Distance, q.x, q.y, q.z);
+                Console.WriteLine("{0} : At: {1} | ({2},{3},{4})", item.Node.Data.Name, item.Distance, q.X, q.Y, q.Z);
             }
         }
 
@@ -78,7 +76,7 @@ namespace sphere.Tests
             Assert.Equal(2, closest.Count);
             Assert.Equal("Tokyo", closest[0].Node.Data.Name);
             Assert.Equal("Seoul", closest[1].Node.Data.Name);
-        }  
+        }
 
         [Fact]
         public void Check_Berlin()
@@ -92,9 +90,9 @@ namespace sphere.Tests
             Assert.Equal("Paris", closest[1].Node.Data.Name);
             Assert.Equal("London", closest[2].Node.Data.Name);
             Assert.Equal("Rome", closest[3].Node.Data.Name);
-        }      
+        }
 
-        [Fact] 
+        [Fact]
         public void Check_Hartford_200km()
         {
             var hartford = new City("Hartford", 41.76, -72.67);
@@ -106,6 +104,6 @@ namespace sphere.Tests
             Assert.Equal("Troy", closest[0].Node.Data.Name);
             Assert.Equal("Boston", closest[1].Node.Data.Name);
             Assert.Equal("New York", closest[2].Node.Data.Name);
-        }  
+        }
     }
 }
